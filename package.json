@@ -1,0 +1,29 @@
+{
+  "name": "vscode-cpptools",
+  "version": "0.1.0",
+  "description": "Public API for vscode-cpptools",
+  "typings": "./out/api.d.ts",
+  "engines": {
+    "vscode": "^1.22.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.5.3",
+    "vscode": "^1.1.17"
+  },
+  "scripts": {
+    "compile": "tsc -p ./"
+  },
+  "keywords": [
+    "vscode",
+    "cpptools"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-cpptools-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-cpptools-api/issues"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT"
+}
