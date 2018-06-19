@@ -1,6 +1,6 @@
 {
   "name": "vscode-cpptools",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "description": "Public API for vscode-cpptools",
   "typings": "./out/api.d.ts",
   "main": "./out/api.js",
@@ -8,12 +8,13 @@
     "vscode": "^1.22.0"
   },
   "devDependencies": {
+    "@types/node": "^8.0.46",
     "typescript": "^2.5.3",
     "vscode": "^1.1.17",
     "vscode-jsonrpc": "3.5.0"
   },
   "scripts": {
-    "compile": "tsc -p ./"
+    "compile": "node ./node_modules/vscode/bin/install && tsc -p ./"
   },
   "keywords": [
     "vscode",
