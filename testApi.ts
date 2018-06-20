@@ -4,8 +4,20 @@
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 
-import { CppToolsApi } from './api';
+import { CppToolsApi, CppToolsExtension, Version } from './api';
 import * as vscode from 'vscode';
+
+/**
+ * The interface provided by the C/C++ extension during activation. [CppToolsExtension](#CppToolsExtension)
+ * is also castable to [CppToolsTestExtension](#CppToolsTestExtension)
+ */
+export interface CppToolsTestExtension extends CppToolsExtension {
+    /**
+     * Get an API object.
+     * @param version The desired version.
+     */
+    getTestApi(version: Version): CppToolsTestApi;
+}
 
 /**
  * An interface to grant CustomConfigurationProvider extensions access to a test hook that

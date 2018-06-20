@@ -1,11 +1,43 @@
 import * as vscode from 'vscode';
 import { CancellationToken } from 'vscode-jsonrpc';
 /**
- * An interface to allow Custom Configuration Provider extensions to communicate with this extension.
+ * API version information.
+ */
+export declare enum Version {
+    v0 = 0,
+    v1 = 1,
+    latest = 1,
+}
+/**
+ * The interface provided by the C/C++ extension during activation.
+ * @example
+```
+    let extension: CppToolsExtension;
+    let cpptools: vscode.Extension<CppToolsExtension> =
+        vscode.extensions.getExtension("ms-vscode.cpptools");
+
+    if (!cpptools.isActive) {
+        extension = await cpptools.activate();
+    } else {
+        extension = cpptools.exports;
+    }
+    let api: CppToolsApi = extension.getApi(Version.v1);
+```
+ */
+export interface CppToolsExtension {
+    /**
+     * Get an API object.
+     * @param version The desired version.
+     */
+    getApi(version: Version): CppToolsApi;
+}
+/**
+ * An interface to allow VS Code extensions to communicate with the C/C++ extension.
+ * @see [CppToolsExtension](#CppToolsExtension) for a code example.
  */
 export interface CppToolsApi extends vscode.Disposable {
     /**
-     * Register the Custom Configuration Provider.
+     * Register a [CustomConfigurationProvider](#CustomConfigurationProvider).
      * This must be called as soon as the provider extension is ready. This is necessary for cpptools
      * to request configurations from the provider.
      * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
