@@ -5,7 +5,7 @@ of Microsoft's C/C++ extension for VS Code.
 
 When your extension activates, you can use the following code to get access to the API:
 
-### Version 1.2.0
+### Version >= 1.2.0
 
 ```TypeScript
     import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';

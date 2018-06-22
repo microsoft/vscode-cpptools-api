@@ -40,3 +40,4 @@ export declare enum Status {
     IntelliSenseCompiling = 3,
     IntelliSenseReady = 4,
 }
+export declare function getCppToolsTestApi(version: Version): Promise<CppToolsTestApi | undefined>;

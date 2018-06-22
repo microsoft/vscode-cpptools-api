@@ -50,3 +50,35 @@ export enum Status {
     IntelliSenseCompiling = 3,
     IntelliSenseReady = 4
 }
+
+function isCppToolsTestExtension(extension: CppToolsTestApi | CppToolsTestExtension): extension is CppToolsTestExtension {
+    return (<CppToolsTestExtension>extension).getTestApi !== undefined;
+}
+
+export async function getCppToolsTestApi(version: Version): Promise<CppToolsTestApi | undefined> {
+    let cpptools: vscode.Extension<any> | undefined = vscode.extensions.getExtension("ms-vscode.cpptools");
+    let extension: CppToolsTestApi | CppToolsTestExtension;
+    let api: CppToolsTestApi | undefined;
+
+    if (cpptools) {
+        if (!cpptools.isActive) { 
+            extension = await cpptools.activate();
+        } else {
+            extension = cpptools.exports;
+        }
+     
+        if (isCppToolsTestExtension(extension)) {
+            // ms-vscode.cpptools > 0.17.5
+            api = extension.getTestApi(version);
+        } else {
+            // ms-vscode.cpptools version 0.17.5
+            api = extension;
+            if (version !== Version.v0) {
+                console.warn(`vscode-cpptools-api version ${version} requested, but is not available in version 0.17.5 of the cpptools extension. Using version 0 instead.`);
+            }
+        }
+    } else {
+        console.warn("C/C++ extension is not installed");
+    }
+    return api;
+}

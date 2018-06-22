@@ -1,6 +1,6 @@
 {
   "name": "vscode-cpptools",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Public API for vscode-cpptools",
   "typings": "./out/api.d.ts",
   "main": "./out/api.js",
