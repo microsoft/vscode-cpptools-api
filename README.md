@@ -1,3 +1,42 @@
+# Public API for the ms-vscode.cpptools VS Code extension
+
+The purpose of this API is to allow for build system extensions to provide IntelliSense configurations for consumers
+of Microsoft's C/C++ extension for VS Code.
+
+When your extension activates, you can use the following code to get access to the API:
+
+### Version 1.1.0
+
+```TypeScript
+    let cpptools: vscode.Extension<CppToolsExtension> = vscode.extensions.getExtension("ms-vscode.cpptools");
+    let extension: CppToolsExtension;
+    let api: CppToolsApi;
+
+    if (!cpptools.isActive) { 
+        extension = await cpptools.activate();
+    } else {
+        extension = cpptools.exports;
+    }
+
+    if (extension.getApi) {
+        api = extension.getApi(Version.v1); // ms-vscode.cpptools > 0.17.5
+    } else {
+        api = <CppToolsApi>extension;       // ms-vscode.cpptools version 0.17.5
+    }
+```
+
+### Version 0.1.0
+
+```TypeScript
+    let cpptools: vscode.Extension<CppToolsApi> = vscode.extensions.getExtension("ms-vscode.cpptools");
+    let api: CppToolsApi;
+
+    if (!cpptools.isActive) { 
+        api = await cpptools.activate();
+    } else {
+        api = cpptools.exports;
+    }
+```
 
 # Contributing
 
