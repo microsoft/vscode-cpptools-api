@@ -127,3 +127,4 @@ export interface SourceFileConfigurationItem {
      */
     configuration: SourceFileConfiguration;
 }
+export declare function getCppToolsApi(version: Version): Promise<CppToolsApi | undefined>;

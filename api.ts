@@ -149,3 +149,32 @@ export interface SourceFileConfigurationItem {
      */
     configuration: SourceFileConfiguration;
 }
+
+function isCppToolsExtension(extension: CppToolsApi | CppToolsExtension): extension is CppToolsExtension {
+    return (<CppToolsExtension>extension).getApi !== undefined;
+}
+
+export async function getCppToolsApi(version: Version): Promise<CppToolsApi | undefined> {
+    let cpptools: vscode.Extension<any> | undefined = vscode.extensions.getExtension("ms-vscode.cpptools");
+    let extension: CppToolsApi | CppToolsExtension;
+    let api: CppToolsApi | undefined;
+
+    if (cpptools) {
+        if (!cpptools.isActive) { 
+            extension = await cpptools.activate();
+        } else {
+            extension = cpptools.exports;
+        }
+     
+        if (isCppToolsExtension(extension)) {
+            // ms-vscode.cpptools > 0.17.5
+            api = extension.getApi(version);
+        } else {
+            // ms-vscode.cpptools version 0.17.5
+            api = extension;
+        }
+    } else {
+        console.warn("C/C++ extension is not installed");
+    }
+    return api;
+}

@@ -5,31 +5,15 @@ of Microsoft's C/C++ extension for VS Code.
 
 When your extension activates, you can use the following code to get access to the API:
 
-### Version 1.1.0
+### Version 1.2.0
 
 ```TypeScript
-    let cpptools: vscode.Extension<any>|undefined = vscode.extensions.getExtension("ms-vscode.cpptools");
-    let extension: any;
-    let api: CppToolsApi;
+    import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
 
+    let cpptools: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
     if (cpptools) {
-        if (!cpptools.isActive) { 
-            extension = await cpptools.activate();
-        } else {
-            extension = cpptools.exports;
-        }
-     
-        if ((<CppToolsExtension>extension).getApi) {
-            // ms-vscode.cpptools > 0.17.5
-            api = (<CppToolsExtension>extension).getApi(Version.v1);
-        } else {
-            // ms-vscode.cpptools version 0.17.5
-            api = <CppToolsApi>extension;
-        }
-
-        api.registerCustomConfigurationProvider(provider);
-    } else {
-        console.warn("C/C++ extension is not installed");
+        // dispose the 'api' in your extension's deactivate() method, or whenever you want to deregister the provider.
+        cpptools.registerCustomConfigurationProvider(provider);
     }
 ```
 
