@@ -8,20 +8,28 @@ When your extension activates, you can use the following code to get access to t
 ### Version 1.1.0
 
 ```TypeScript
-    let cpptools: vscode.Extension<CppToolsExtension> = vscode.extensions.getExtension("ms-vscode.cpptools");
-    let extension: CppToolsExtension;
+    let cpptools: vscode.Extension<any>|undefined = vscode.extensions.getExtension("ms-vscode.cpptools");
+    let extension: any;
     let api: CppToolsApi;
 
-    if (!cpptools.isActive) { 
-        extension = await cpptools.activate();
-    } else {
-        extension = cpptools.exports;
-    }
+    if (cpptools) {
+        if (!cpptools.isActive) { 
+            extension = await cpptools.activate();
+        } else {
+            extension = cpptools.exports;
+        }
+     
+        if ((<CppToolsExtension>extension).getApi) {
+            // ms-vscode.cpptools > 0.17.5
+            api = (<CppToolsExtension>extension).getApi(Version.v1);
+        } else {
+            // ms-vscode.cpptools version 0.17.5
+            api = <CppToolsApi>extension;
+        }
 
-    if (extension.getApi) {
-        api = extension.getApi(Version.v1); // ms-vscode.cpptools > 0.17.5
+        api.registerCustomConfigurationProvider(provider);
     } else {
-        api = <CppToolsApi>extension;       // ms-vscode.cpptools version 0.17.5
+        console.warn("C/C++ extension is not installed");
     }
 ```
 
