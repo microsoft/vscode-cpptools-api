@@ -44,6 +44,9 @@ function getCppToolsApi(version) {
             else {
                 // ms-vscode.cpptools version 0.17.5
                 api = extension;
+                if (version !== Version.v0) {
+                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in version 0.17.5 of the cpptools extension. Using version 0 instead.`);
+                }
             }
         }
         else {
