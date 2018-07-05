@@ -46,7 +46,9 @@ export interface CppToolsApi extends vscode.Disposable {
     registerCustomConfigurationProvider(provider: CustomConfigurationProvider): void;
     /**
      * Notifies cpptools that the current configuration has changed. Upon receiving this notification,
-     * cpptools will request the new configurations.
+     * cpptools will request the new configurations. The provider extension may want to call this
+     * upon registering to ensure that cpptools updates IntelliSense for any files that were already
+     * open in the editor before the provider was registered.
      * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
      * instance representing the provider extension.
      */
@@ -97,11 +99,11 @@ export interface SourceFileConfiguration {
      */
     defines: string[];
     /**
-     * Currently, "msvc-x64" or "clang-x64".
+     * Currently, `msvc-x64` or `clang-x64`.
      */
     intelliSenseMode: string;
     /**
-     * The C or C++ standard. See `package.json` for valid values.
+     * The C or C++ standard. Currently, `c89`, `c99`, `c11`, `c++98`, `c++03`, `c++11`, `c++14`, or `c++17`.
      */
     standard: string;
     /**
@@ -115,11 +117,29 @@ export interface SourceFileConfiguration {
     compilerPath?: string;
 }
 /**
- * A model representing a source file and its corresponding configuration.
+ * The model representing a source file and its corresponding configuration.
  */
 export interface SourceFileConfigurationItem {
     /**
-     * The URI of the source file.
+     * The URI of the source file. It should follow the file URI scheme and represent an absolute path to the file.
+     * @example
+```
+    // When working with a vscode.Uri,
+    // use the toString() method to populate this field.
+    let uri: vscode.Uri = ...;
+    let item: SourceFileConfigurationItem = {
+        uri: uri.toString(),
+        configuration: ...
+    };
+
+    // When working with a file path,
+    // convert it to a vscode.Uri first.
+    let path: string = ...;
+    let item: SourceFileConfigurationItem = {
+        uri: vscode.Uri.file(path).toString(),
+        configuration: ...
+    };
+```
      */
     uri: string;
     /**
@@ -127,4 +147,20 @@ export interface SourceFileConfigurationItem {
      */
     configuration: SourceFileConfiguration;
 }
+/**
+ * Helper function to get the CppToolsApi from the cpptools extension.
+ * @param version The desired API version
+ * @example
+```
+    import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
+
+    let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
+    if (api) {
+        // Dispose of the 'api' in your extension's
+        // deactivate() method, or whenever you want to
+        // deregister the provider.
+        api.registerCustomConfigurationProvider(provider);
+    }
+```
+ */
 export declare function getCppToolsApi(version: Version): Promise<CppToolsApi | undefined>;

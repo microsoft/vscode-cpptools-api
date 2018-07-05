@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All Rights Reserved.
- * See 'LICENSE' in the project root for license information.
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT license.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -25,6 +25,22 @@ var Version;
 function isCppToolsExtension(extension) {
     return extension.getApi !== undefined;
 }
+/**
+ * Helper function to get the CppToolsApi from the cpptools extension.
+ * @param version The desired API version
+ * @example
+```
+    import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
+
+    let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
+    if (api) {
+        // Dispose of the 'api' in your extension's
+        // deactivate() method, or whenever you want to
+        // deregister the provider.
+        api.registerCustomConfigurationProvider(provider);
+    }
+```
+ */
 function getCppToolsApi(version) {
     return __awaiter(this, void 0, void 0, function* () {
         let cpptools = vscode.extensions.getExtension("ms-vscode.cpptools");

@@ -1,6 +1,6 @@
 /* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All Rights Reserved.
- * See 'LICENSE' in the project root for license information.
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT license.
  * ------------------------------------------------------------------------------------------ */
 'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {

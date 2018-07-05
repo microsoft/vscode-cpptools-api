@@ -9,11 +9,11 @@ When your extension activates, you can use the following code to get access to t
 
 ```TypeScript
     import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
-
-    let cpptools: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
-    if (cpptools) {
-        // dispose the 'api' in your extension's deactivate() method, or whenever you want to deregister the provider.
-        cpptools.registerCustomConfigurationProvider(provider);
+ 
+    let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
+    if (api) {
+        // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to deregister the provider.
+        api.registerCustomConfigurationProvider(provider);
     }
 ```
 
@@ -29,6 +29,12 @@ When your extension activates, you can use the following code to get access to t
         api = cpptools.exports;
     }
 ```
+
+Upon registering the provider, the C/C++ extension will prompt the user if they would like to use the custom configuration
+provider to serve IntelliSense configurations for the workspace folder, so it is best practice not to register the provider
+until it is ready to begin serving configurations. Once the provider is registered, it is recommended to call
+`didChangeCustomConfigurations` so that the C/C++ extension will ask for configurations for files that might have been opened
+in the editor before the custom configuration provider was registered.
 
 # Contributing
 
