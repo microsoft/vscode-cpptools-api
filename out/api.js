@@ -20,7 +20,8 @@ var Version;
 (function (Version) {
     Version[Version["v0"] = 0] = "v0";
     Version[Version["v1"] = 1] = "v1";
-    Version[Version["latest"] = 1] = "latest";
+    Version[Version["v2"] = 2] = "v2";
+    Version[Version["latest"] = 2] = "latest";
 })(Version = exports.Version || (exports.Version = {}));
 function isCppToolsExtension(extension) {
     return extension.getApi !== undefined;
@@ -56,6 +57,14 @@ function getCppToolsApi(version) {
             if (isCppToolsExtension(extension)) {
                 // ms-vscode.cpptools > 0.17.5
                 api = extension.getApi(version);
+                if (version !== Version.v1) {
+                    if (api.version === undefined) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
+                    }
+                    else if (version !== api.version) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.version} instead.`);
+                    }
+                }
             }
             else {
                 // ms-vscode.cpptools version 0.17.5

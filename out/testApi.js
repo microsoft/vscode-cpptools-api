@@ -42,6 +42,14 @@ function getCppToolsTestApi(version) {
             if (isCppToolsTestExtension(extension)) {
                 // ms-vscode.cpptools > 0.17.5
                 api = extension.getTestApi(version);
+                if (version !== api_1.Version.v1) {
+                    if (api.version === undefined) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
+                    }
+                    else if (version !== api.version) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.version} instead.`);
+                    }
+                }
             }
             else {
                 // ms-vscode.cpptools version 0.17.5
