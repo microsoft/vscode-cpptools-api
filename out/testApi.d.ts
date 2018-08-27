@@ -29,7 +29,7 @@ export interface CppToolsTestHook extends vscode.Disposable {
     /**
      * Fires when the Tag Parser or IntelliSense engine's status changes.
      */
-    StatusChanged: vscode.Event<Status>;
+    readonly StatusChanged: vscode.Event<Status>;
 }
 /**
  * Status codes.

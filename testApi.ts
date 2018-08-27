@@ -38,7 +38,7 @@ export interface CppToolsTestHook extends vscode.Disposable {
     /**
      * Fires when the Tag Parser or IntelliSense engine's status changes.
      */
-    StatusChanged: vscode.Event<Status>;
+    readonly StatusChanged: vscode.Event<Status>;
 }
 
 /**
@@ -69,7 +69,24 @@ export async function getCppToolsTestApi(version: Version): Promise<CppToolsTest
      
         if (isCppToolsTestExtension(extension)) {
             // ms-vscode.cpptools > 0.17.5
-            api = extension.getTestApi(version);
+            try {
+                api = extension.getTestApi(version);
+            } catch (err) {
+                // Unfortunately, ms-vscode.cpptools [0.17.6, 0.18.1] throws a RangeError if you specify a version greater than v1.
+                // These versions of the extension will not be able to act on the newer interface and v2 is a superset of v1, so we can safely fall back to v1.
+                let e: RangeError = <RangeError>err;
+                if (e.message && e.message.startsWith("Invalid version")) {
+                    api = extension.getTestApi(Version.v1);
+                }
+            }
+
+            if (version !== Version.v1) {
+                if (!api.getVersion) {
+                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
+                } else if (version !== api.getVersion()) {
+                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
+                }
+            }
         } else {
             // ms-vscode.cpptools version 0.17.5
             api = extension;
