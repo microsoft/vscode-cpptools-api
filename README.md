@@ -5,19 +5,36 @@ of Microsoft's C/C++ extension for VS Code.
 
 When your extension activates, you can use the following code to get access to the API:
 
-### Version >= 1.2.0
+### Version >= 2.0.0
+```TypeScript
+    import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
+ 
+    let api: CppToolsApi|undefined = await getCppToolsApi(Version.v2);
+    if (api) {
+        // Inform cpptools that a custom config provider will be able to service the current workspace.
+        api.registerCustomConfigurationProvider(provider);
+
+        // Do any required setup that the provider needs.
+
+        // Notify cpptools that the provider is ready to provide IntelliSense configurations.
+        api.notifyReady(provider);
+    }
+    // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to unregister the provider.
+```
+
+### Version < 2.0.0
 
 ```TypeScript
     import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
  
     let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
     if (api) {
-        // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to deregister the provider.
         api.registerCustomConfigurationProvider(provider);
     }
+    // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to unregister the provider.
 ```
 
-### Version 0.1.0
+### Version 0.1.0 [deprecated]
 
 ```TypeScript
     let cpptools: vscode.Extension<CppToolsApi> = vscode.extensions.getExtension("ms-vscode.cpptools");
@@ -31,10 +48,17 @@ When your extension activates, you can use the following code to get access to t
 ```
 
 Upon registering the provider, the C/C++ extension will prompt the user if they would like to use the custom configuration
-provider to serve IntelliSense configurations for the workspace folder, so it is best practice not to register the provider
-until it is ready to begin serving configurations. Once the provider is registered, it is recommended to call
-`didChangeCustomConfigurations` so that the C/C++ extension will ask for configurations for files that might have been opened
-in the editor before the custom configuration provider was registered.
+provider to serve IntelliSense configurations for the workspace folder.
+
+In version 2, you will want to register the provider as soon as your extension activates and confirms that it is capable of
+providing configurations for the active workspace so that the C/C++ extension can disable standard handling of
+`c_cpp_properties.json`, including indexing and parsing the files referenced by the active configuration.
+
+
+Prior to version 2, it is best practice to wait to register the provider until it is ready to begin serving configurations.
+Once the provider is registered, it is recommended to call `didChangeCustomConfigurations` so that the C/C++ extension will
+ask for configurations for files that might have been opened in the editor before the custom configuration provider was
+registered.
 
 # Contributing
 

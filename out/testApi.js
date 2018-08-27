@@ -41,13 +41,23 @@ function getCppToolsTestApi(version) {
             }
             if (isCppToolsTestExtension(extension)) {
                 // ms-vscode.cpptools > 0.17.5
-                api = extension.getTestApi(version);
+                try {
+                    api = extension.getTestApi(version);
+                }
+                catch (err) {
+                    // Unfortunately, ms-vscode.cpptools [0.17.6, 0.18.1] throws a RangeError if you specify a version greater than v1.
+                    // These versions of the extension will not be able to act on the newer interface and v2 is a superset of v1, so we can safely fall back to v1.
+                    let e = err;
+                    if (e.message && e.message.startsWith("Invalid version")) {
+                        api = extension.getTestApi(api_1.Version.v1);
+                    }
+                }
                 if (version !== api_1.Version.v1) {
-                    if (api.version === undefined) {
+                    if (!api.getVersion) {
                         console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
                     }
-                    else if (version !== api.version) {
-                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.version} instead.`);
+                    else if (version !== api.getVersion()) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
                     }
                 }
             }

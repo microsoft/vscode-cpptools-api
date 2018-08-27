@@ -13,32 +13,8 @@ import { CancellationToken } from 'vscode-jsonrpc';
 export enum Version {
     v0 = 0, // 0.x.x
     v1 = 1, // 1.x.x
-    v2 = 2,
+    v2 = 2, // 2.x.x
     latest = v2
-}
-
-/**
- * The interface provided by the C/C++ extension during activation.
- * @example
-```
-    let extension: CppToolsExtension;
-    let cpptools: vscode.Extension<CppToolsExtension> =
-        vscode.extensions.getExtension("ms-vscode.cpptools");
-
-    if (!cpptools.isActive) { 
-        extension = await cpptools.activate();
-    } else {
-        extension = cpptools.exports;
-    }
-    let api: CppToolsApi = extension.getApi(Version.v1);
-```
- */
-export interface CppToolsExtension {
-    /**
-     * Get an API object.
-     * @param version The desired version.
-     */
-    getApi(version: Version): CppToolsApi;
 }
 
 /**
@@ -49,7 +25,7 @@ export interface CppToolsApi extends vscode.Disposable {
     /**
      * The version of the API being used.
      */
-    version: Version;
+    getVersion(): Version;
 
     /**
      * Register a [CustomConfigurationProvider](#CustomConfigurationProvider).
@@ -79,6 +55,12 @@ export interface CppToolsApi extends vscode.Disposable {
      */
     didChangeCustomConfiguration(provider: CustomConfigurationProvider): void;
 
+    /**
+     * Notify the C/C++ extension that the code browsing configuration has changed. Upon receiving this
+     * notification, the C/C++ extension will request the new configuration.
+     * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
+     * instance representing the provider extension.
+     */
     didChangeCustomBrowseConfiguration(provider: CustomConfigurationProvider): void;
 }
 
@@ -89,12 +71,12 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
     /**
      * The friendly name of the Custom Configuration Provider extension.
      */
-    name: string;
+    readonly name: string;
 
     /**
      * The id of the extension providing custom configurations. (e.g. `ms-vscode.cpptools`)
      */
-    extensionId: string;
+    readonly extensionId: string;
 
     /**
      * A request to determine whether this provider can provide IntelliSense configurations for the given document.
@@ -117,14 +99,16 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
     provideConfigurations(uris: vscode.Uri[], token?: CancellationToken): Thenable<SourceFileConfigurationItem[]>;
 
     /**
-     * TODO
+     * A request to determine whether this provider can provide a code browsing configuration for the workspace folder.
      * @param token (optional) The cancellation token.
+     * @returns 'true' if this provider can provider a code browsing configuration for the workspace folder.
      */
     canProvideBrowseConfiguration(token?: CancellationToken): Thenable<boolean>;
 
     /**
-     * A request to get the browse configuration for the workspace folder.
-     * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration)
+     * A request to get the code browsing configuration for the workspace folder.
+     * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
+     * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
      */
     provideBrowseConfiguration(token?: CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
 }
@@ -137,34 +121,40 @@ export interface SourceFileConfiguration {
      * This must also include the system include path (compiler defaults) unless
      * [compilerPath](#SourceFileConfiguration.compilerPath) is specified.
      */
-    includePath: string[];
+    readonly includePath: string[];
 
     /**
      * This must also include the compiler default defines (__cplusplus, etc) unless
      * [compilerPath](#SourceFileConfiguration.compilerPath) is specified.
      */
-    defines: string[];
+    readonly defines: string[];
 
     /**
      * The compiler to emulate.
      */
-    intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
+    readonly intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
     
     /**
      * The C or C++ standard to emulate.
      */
-    standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
+    readonly standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
 
     /**
      * Any files that need to be included before the source file is parsed.
      */
-    forcedInclude?: string[];
+    readonly forcedInclude?: string[];
 
     /**
-     * The full path to the compiler. If specified, the extension will query it for default includes and defines and
+     * The full path to the compiler. If specified, the extension will query it for system includes and defines and
      * add them to [includePath](#SourceFileConfiguration.includePath) and [defines](#SourceFileConfiguration.defines).
      */
-    compilerPath?: string;
+    readonly compilerPath?: string;
+
+    /**
+     * The version of the Windows SDK that should be used. This field will only be used if
+     * [compilerPath](#SourceFileConfiguration.compilerPath) is set and the compiler is capable of targeting Windows.
+     */
+    readonly windowsSdkVersion?: string;
 }
 
 /**
@@ -192,12 +182,12 @@ export interface SourceFileConfigurationItem {
     };
 ```
      */
-    uri: string;
+    readonly uri: string;
 
     /**
      * The IntelliSense configuration for [uri](#SourceFileConfigurationItem.uri)
      */
-    configuration: SourceFileConfiguration;
+    readonly configuration: SourceFileConfiguration;
 }
 
 /**
@@ -205,9 +195,42 @@ export interface SourceFileConfigurationItem {
  */
 export interface WorkspaceBrowseConfiguration {
     /**
-     * 
+     * This must also include the system include path (compiler defaults) unless
+     * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is specified.
      */
-    browsePath: string[]
+    readonly browsePath: string[];
+
+    /**
+     * The full path to the compiler. If specified, the extension will query it for system includes and
+     * add them to [browsePath](#WorkspaceBrowseConfiguration.browsePath).
+     */
+    readonly compilerPath?: string;
+
+    /**
+     * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
+     * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
+     */
+    readonly standard?: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
+
+    /**
+     * The version of the Windows SDK that should be used. This field defaults to the latest Windows SDK
+     * installed on the PC and will only be used if [compilerPath](#WorkspaceBrowseConfiguration.compilerPath)
+     * is set and the compiler is capable of targeting Windows.
+     */
+    readonly windowsSdkVersion?: string;
+}
+
+/**
+ * The interface provided by the C/C++ extension during activation.
+ * It is recommended to use the helper function [getCppToolsApi](#getCppToolsApi) instead
+ * of querying the extension instance directly.
+ */
+export interface CppToolsExtension {
+    /**
+     * Get an API object.
+     * @param version The desired version.
+     */
+    getApi(version: Version): CppToolsApi;
 }
 
 function isCppToolsExtension(extension: CppToolsApi | CppToolsExtension): extension is CppToolsExtension {
@@ -223,11 +246,19 @@ function isCppToolsExtension(extension: CppToolsApi | CppToolsExtension): extens
 
     let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
     if (api) {
-        // Dispose of the 'api' in your extension's
-        // deactivate() method, or whenever you want to
-        // deregister the provider.
+        // Inform cpptools that a custom config provider
+        // will be able to service the current workspace.
         api.registerCustomConfigurationProvider(provider);
+
+        // Do any required setup that the provider needs.
+
+        // Notify cpptools that the provider is ready to
+        // provide IntelliSense configurations.
+        api.notifyReady(provider);
     }
+    // Dispose of the 'api' in your extension's
+    // deactivate() method, or whenever you want to
+    // unregister the provider.
 ```
  */
 export async function getCppToolsApi(version: Version): Promise<CppToolsApi | undefined> {
@@ -244,12 +275,22 @@ export async function getCppToolsApi(version: Version): Promise<CppToolsApi | un
      
         if (isCppToolsExtension(extension)) {
             // ms-vscode.cpptools > 0.17.5
-            api = extension.getApi(version);
+            try {
+                api = extension.getApi(version);
+            } catch (err) {
+                // Unfortunately, ms-vscode.cpptools [0.17.6, 0.18.1] throws a RangeError if you specify a version greater than v1.
+                // These versions of the extension will not be able to act on the newer interface and v2 is a superset of v1, so we can safely fall back to v1.
+                let e: RangeError = <RangeError>err;
+                if (e.message && e.message.startsWith("Invalid version")) {
+                    api = extension.getApi(Version.v1);
+                }
+            }
+
             if (version !== Version.v1) {
-                if (api.version === undefined) {
+                if (!api.getVersion) {
                     console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
-                } else if (version !== api.version) {
-                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.version} instead.`);
+                } else if (version !== api.getVersion()) {
+                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
                 }
             }
         } else {

@@ -35,11 +35,19 @@ function isCppToolsExtension(extension) {
 
     let api: CppToolsApi|undefined = await getCppToolsApi(Version.v1);
     if (api) {
-        // Dispose of the 'api' in your extension's
-        // deactivate() method, or whenever you want to
-        // deregister the provider.
+        // Inform cpptools that a custom config provider
+        // will be able to service the current workspace.
         api.registerCustomConfigurationProvider(provider);
+
+        // Do any required setup that the provider needs.
+
+        // Notify cpptools that the provider is ready to
+        // provide IntelliSense configurations.
+        api.notifyReady(provider);
     }
+    // Dispose of the 'api' in your extension's
+    // deactivate() method, or whenever you want to
+    // unregister the provider.
 ```
  */
 function getCppToolsApi(version) {
@@ -56,13 +64,23 @@ function getCppToolsApi(version) {
             }
             if (isCppToolsExtension(extension)) {
                 // ms-vscode.cpptools > 0.17.5
-                api = extension.getApi(version);
+                try {
+                    api = extension.getApi(version);
+                }
+                catch (err) {
+                    // Unfortunately, ms-vscode.cpptools [0.17.6, 0.18.1] throws a RangeError if you specify a version greater than v1.
+                    // These versions of the extension will not be able to act on the newer interface and v2 is a superset of v1, so we can safely fall back to v1.
+                    let e = err;
+                    if (e.message && e.message.startsWith("Invalid version")) {
+                        api = extension.getApi(Version.v1);
+                    }
+                }
                 if (version !== Version.v1) {
-                    if (api.version === undefined) {
+                    if (!api.getVersion) {
                         console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
                     }
-                    else if (version !== api.version) {
-                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.version} instead.`);
+                    else if (version !== api.getVersion()) {
+                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
                     }
                 }
             }
