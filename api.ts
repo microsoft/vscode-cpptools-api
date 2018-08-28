@@ -165,24 +165,16 @@ export interface SourceFileConfigurationItem {
      * The URI of the source file. It should follow the file URI scheme and represent an absolute path to the file.
      * @example
 ```
-    // When working with a vscode.Uri,
-    // use the toString() method to populate this field.
-    let uri: vscode.Uri = ...;
-    let item: SourceFileConfigurationItem = {
-        uri: uri.toString(),
-        configuration: ...
-    };
-
     // When working with a file path,
     // convert it to a vscode.Uri first.
     let path: string = ...;
     let item: SourceFileConfigurationItem = {
-        uri: vscode.Uri.file(path).toString(),
+        uri: vscode.Uri.file(path),
         configuration: ...
     };
 ```
      */
-    readonly uri: string;
+    readonly uri: string | vscode.Uri;
 
     /**
      * The IntelliSense configuration for [uri](#SourceFileConfigurationItem.uri)
