@@ -11,13 +11,23 @@ When your extension activates, you can use the following code to get access to t
  
     let api: CppToolsApi|undefined = await getCppToolsApi(Version.v2);
     if (api) {
-        // Inform cpptools that a custom config provider will be able to service the current workspace.
-        api.registerCustomConfigurationProvider(provider);
+        if (api.notifyReady) {
+            // Inform cpptools that a custom config provider will be able to service the current workspace.
+            api.registerCustomConfigurationProvider(provider);
 
-        // Do any required setup that the provider needs.
+            // Do any required setup that the provider needs.
 
-        // Notify cpptools that the provider is ready to provide IntelliSense configurations.
-        api.notifyReady(provider);
+            // Notify cpptools that the provider is ready to provide IntelliSense configurations.
+            api.notifyReady(provider);
+        } else {
+            // Running on a version of cpptools that doesn't support v2 yet.
+            
+            // Do any required setup that the provider needs.
+
+            // Inform cpptools that a custom config provider will be able to service the current workspace.
+            api.registerCustomConfigurationProvider(provider);
+            api.didChangeCustomConfiguration(provider);
+        }
     }
     // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to unregister the provider.
 ```
@@ -53,7 +63,6 @@ provider to serve IntelliSense configurations for the workspace folder.
 In version 2, you will want to register the provider as soon as your extension activates and confirms that it is capable of
 providing configurations for the active workspace so that the C/C++ extension can disable standard handling of
 `c_cpp_properties.json`, including indexing and parsing the files referenced by the active configuration.
-
 
 Prior to version 2, it is best practice to wait to register the provider until it is ready to begin serving configurations.
 Once the provider is registered, it is recommended to call `didChangeCustomConfigurations` so that the C/C++ extension will
