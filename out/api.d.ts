@@ -113,9 +113,13 @@ export interface SourceFileConfiguration {
      */
     readonly intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
     /**
-     * The C or C++ standard to emulate.
+     * The C standard to emulate.
      */
-    readonly standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
+    readonly cStandard?: "c89" | "c99" | "c11";
+    /**
+     * The C++ standard to emulate.
+     */
+    readonly cppStandard?: "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
     /**
      * Any files that need to be included before the source file is parsed.
      */
@@ -169,10 +173,15 @@ export interface WorkspaceBrowseConfiguration {
      */
     readonly compilerPath?: string;
     /**
-     * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
+     * The C standard to emulate. This field defaults to "c++17" and will only be used if
      * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
      */
-    readonly standard?: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
+    readonly cStandard?: "c89" | "c99" | "c11";
+    /**
+     * The C++ standard to emulate. This field defaults to "c++17" and will only be used if
+     * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
+     */
+    readonly cppStandard?: "c++98" | "c++03" | "c++11" | "c++14" | "c++17";
     /**
      * The version of the Windows SDK that should be used. This field defaults to the latest Windows SDK
      * installed on the PC and will only be used if [compilerPath](#WorkspaceBrowseConfiguration.compilerPath)
