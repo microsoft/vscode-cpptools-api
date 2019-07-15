@@ -133,7 +133,7 @@ export interface SourceFileConfiguration {
      * The compiler to emulate.
      */
     readonly intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
-    
+
     /**
      * The C or C++ standard to emulate.
      */
@@ -143,6 +143,11 @@ export interface SourceFileConfiguration {
      * Any files that need to be included before the source file is parsed.
      */
     readonly forcedInclude?: string[];
+
+    /**
+     * Arguments for the compiler.
+     */
+    readonly compilerArgs?: string;
 
     /**
      * The full path to the compiler. If specified, the extension will query it for system includes and defines and
@@ -197,6 +202,11 @@ export interface WorkspaceBrowseConfiguration {
      * add them to [browsePath](#WorkspaceBrowseConfiguration.browsePath).
      */
     readonly compilerPath?: string;
+
+    /**
+     * Arguments for the compiler.
+     */
+    readonly compilerArgs?: string;
 
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
@@ -264,7 +274,7 @@ export async function getCppToolsApi(version: Version): Promise<CppToolsApi | un
         } else {
             extension = cpptools.exports;
         }
-     
+
         if (isCppToolsExtension(extension)) {
             // ms-vscode.cpptools > 0.17.5
             try {
