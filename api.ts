@@ -147,7 +147,7 @@ export interface SourceFileConfiguration {
     /**
      * Arguments for the compiler.
      */
-    readonly compilerArgs?: string;
+    readonly compilerArgs?: string[];
 
     /**
      * The full path to the compiler. If specified, the extension will query it for system includes and defines and
@@ -206,7 +206,7 @@ export interface WorkspaceBrowseConfiguration {
     /**
      * Arguments for the compiler.
      */
-    readonly compilerArgs?: string;
+    readonly compilerArgs?: string[];
 
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
