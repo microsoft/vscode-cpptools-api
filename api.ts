@@ -145,15 +145,15 @@ export interface SourceFileConfiguration {
     readonly forcedInclude?: string[];
 
     /**
-     * Arguments for the compiler.
-     */
-    readonly compilerArgs?: string[];
-
-    /**
      * The full path to the compiler. If specified, the extension will query it for system includes and defines and
      * add them to [includePath](#SourceFileConfiguration.includePath) and [defines](#SourceFileConfiguration.defines).
      */
     readonly compilerPath?: string;
+
+    /**
+     * Arguments for the compiler.
+     */
+    readonly compilerArgs?: string[];
 
     /**
      * The version of the Windows SDK that should be used. This field will only be used if
