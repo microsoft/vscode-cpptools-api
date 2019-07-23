@@ -14,7 +14,8 @@ export enum Version {
     v0 = 0, // 0.x.x
     v1 = 1, // 1.x.x
     v2 = 2, // 2.x.x
-    latest = v2
+    v3 = 3, // 3.x.x
+    latest = v3
 }
 
 /**
