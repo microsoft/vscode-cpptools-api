@@ -14,7 +14,8 @@ export enum Version {
     v0 = 0, // 0.x.x
     v1 = 1, // 1.x.x
     v2 = 2, // 2.x.x
-    latest = v2
+    v3 = 3, // 3.x.x
+    latest = v3
 }
 
 /**
@@ -151,7 +152,7 @@ export interface SourceFileConfiguration {
      * The compiler to emulate.
      */
     readonly intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
-    
+
     /**
      * The C or C++ standard to emulate.
      */
@@ -167,6 +168,11 @@ export interface SourceFileConfiguration {
      * add them to [includePath](#SourceFileConfiguration.includePath) and [defines](#SourceFileConfiguration.defines).
      */
     readonly compilerPath?: string;
+
+    /**
+     * Arguments for the compiler.
+     */
+    readonly compilerArgs?: string[];
 
     /**
      * The version of the Windows SDK that should be used. This field will only be used if
@@ -215,6 +221,11 @@ export interface WorkspaceBrowseConfiguration {
      * add them to [browsePath](#WorkspaceBrowseConfiguration.browsePath).
      */
     readonly compilerPath?: string;
+
+    /**
+     * Arguments for the compiler.
+     */
+    readonly compilerArgs?: string[];
 
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
@@ -282,7 +293,7 @@ export async function getCppToolsApi(version: Version): Promise<CppToolsApi | un
         } else {
             extension = cpptools.exports;
         }
-     
+
         if (isCppToolsExtension(extension)) {
             // ms-vscode.cpptools > 0.17.5
             try {

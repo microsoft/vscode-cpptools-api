@@ -7,7 +7,8 @@ export declare enum Version {
     v0 = 0,
     v1 = 1,
     v2 = 2,
-    latest = 2,
+    v3 = 3,
+    latest = 3,
 }
 /**
  * An interface to allow VS Code extensions to communicate with the C/C++ extension.
@@ -126,6 +127,10 @@ export interface SourceFileConfiguration {
      */
     readonly compilerPath?: string;
     /**
+     * Arugments for the [compilerPath](#SourceFileConfiguration.compilerPath).
+     */
+    readonly compilerArgs?: string[];
+    /**
      * The version of the Windows SDK that should be used. This field will only be used if
      * [compilerPath](#SourceFileConfiguration.compilerPath) is set and the compiler is capable of targeting Windows.
      */
@@ -168,6 +173,10 @@ export interface WorkspaceBrowseConfiguration {
      * add them to [browsePath](#WorkspaceBrowseConfiguration.browsePath).
      */
     readonly compilerPath?: string;
+    /**
+     * Arugments for the [compilerPath](#SourceFileConfiguration.compilerPath).
+     */
+    readonly compilerArgs?: string[];
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
      * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
