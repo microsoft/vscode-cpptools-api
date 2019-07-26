@@ -85,15 +85,30 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
     /**
      * A request to determine whether this provider can provide a code browsing configuration for the workspace folder.
      * @param token (optional) The cancellation token.
-     * @returns 'true' if this provider can provider a code browsing configuration for the workspace folder.
+     * @returns 'true' if this provider can provide a code browsing configuration for the workspace folder.
      */
     canProvideBrowseConfiguration(token?: CancellationToken): Thenable<boolean>;
     /**
      * A request to get the code browsing configuration for the workspace folder.
+     * @param token (optional) The cancellation token.
      * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
      * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
      */
     provideBrowseConfiguration(token?: CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
+    /**
+     * A request to determine whether this provider can provide a code browsing configuration for each folder in a multi-root workspace.
+     * @param token (optional) The cancellation token.
+     * @returns 'true' if this provider can provide a code browsing configuration for each folder in a multi-root workspace.
+     */
+    canProvideBrowseConfigurationsPerFolder(token?: CancellationToken): Thenable<boolean>;
+    /**
+     * A request to get the code browsing configuration for the workspace folder.
+     * @param uri The URI of the folder to provide a browse configuration for.
+     * @param token (optional) The cancellation token.
+     * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
+     * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
+     */
+    provideFolderBrowseConfiguration(uri: vscode.Uri, token?: CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
 }
 /**
  * The model representing the custom IntelliSense configurations for a source file.
@@ -102,6 +117,7 @@ export interface SourceFileConfiguration {
     /**
      * This must also include the system include path (compiler defaults) unless
      * [compilerPath](#SourceFileConfiguration.compilerPath) is specified.
+     * Mac framework paths may also be added to this array.
      */
     readonly includePath: string[];
     /**
@@ -127,7 +143,7 @@ export interface SourceFileConfiguration {
      */
     readonly compilerPath?: string;
     /**
-     * Arugments for the [compilerPath](#SourceFileConfiguration.compilerPath).
+     * Arguments for the compiler.
      */
     readonly compilerArgs?: string[];
     /**
@@ -160,7 +176,7 @@ export interface SourceFileConfigurationItem {
     readonly configuration: SourceFileConfiguration;
 }
 /**
- * The model representing the source browsing configuration for the workspace folder.
+ * The model representing the source browsing configuration for a workspace folder.
  */
 export interface WorkspaceBrowseConfiguration {
     /**
@@ -174,7 +190,7 @@ export interface WorkspaceBrowseConfiguration {
      */
     readonly compilerPath?: string;
     /**
-     * Arugments for the [compilerPath](#SourceFileConfiguration.compilerPath).
+     * Arguments for the compiler.
      */
     readonly compilerArgs?: string[];
     /**
