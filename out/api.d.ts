@@ -128,7 +128,7 @@ export interface SourceFileConfiguration {
     /**
      * The compiler to emulate.
      */
-    readonly intelliSenseMode: "msvc-x64" | "gcc-x64" | "clang-x64";
+    readonly intelliSenseMode: "msvc-x86" | "msvc-x64" | "gcc-x86" | "gcc-x64" | "clang-x86" | "clang-x64";
     /**
      * The C or C++ standard to emulate.
      */
