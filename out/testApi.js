@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const api_1 = require("./api");
 const vscode = require("vscode");
 /**
- * Status codes.
+ * Tag Parser or IntelliSense status codes.
  */
 var Status;
 (function (Status) {
