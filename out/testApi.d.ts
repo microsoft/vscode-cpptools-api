@@ -27,9 +27,13 @@ export interface CppToolsTestApi extends CppToolsApi {
  */
 export interface CppToolsTestHook extends vscode.Disposable {
     /**
+     * [Deprecated] Fires when the Tag Parser or IntelliSense engine's status changes.
+     */
+    readonly StatusChanged: vscode.Event<Status>;
+    /**
      * Fires when the status of the Tag Parser or IntelliSense engine changes for an active document.
      */
-    readonly StatusChanged: vscode.Event<IntelliSenseStatus>;
+    readonly IntelliSenseStatusChanged: vscode.Event<IntelliSenseStatus>;
 }
 /**
  * Tag Parser or IntelliSense status codes.
