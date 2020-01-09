@@ -27,17 +27,24 @@ export interface CppToolsTestApi extends CppToolsApi {
  */
 export interface CppToolsTestHook extends vscode.Disposable {
     /**
-     * Fires when the status of Tag Parser or IntelliSense engine changes.
+     * Fires when the status of the Tag Parser or IntelliSense engine changes for an active document.
      */
-    readonly StatusChanged: vscode.Event<any>;
+    readonly StatusChanged: vscode.Event<IntelliSenseStatus>;
 }
 /**
- * Status codes.
+ * Tag Parser or IntelliSense status codes.
  */
 export declare enum Status {
     TagParsingBegun = 1,
     TagParsingDone = 2,
     IntelliSenseCompiling = 3,
     IntelliSenseReady = 4
+}
+/**
+ * Information about the status of Tag Parser or IntelliSense for an active document.
+ */
+export interface IntelliSenseStatus {
+    status: Status;
+    filename?: string;
 }
 export declare function getCppToolsTestApi(version: Version): Promise<CppToolsTestApi | undefined>;
