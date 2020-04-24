@@ -132,7 +132,7 @@ export interface SourceFileConfiguration {
     /**
      * The C or C++ standard to emulate.
      */
-    readonly standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20";
+    readonly standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" | "gnu89" | "gnu99" | "gnu11" | "gnu18" | "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20";
     /**
      * Any files that need to be included before the source file is parsed.
      */
