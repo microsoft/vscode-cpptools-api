@@ -8,7 +8,8 @@ export declare enum Version {
     v1 = 1,
     v2 = 2,
     v3 = 3,
-    latest = 3
+    v4 = 4,
+    latest = 4
 }
 /**
  * An interface to allow VS Code extensions to communicate with the C/C++ extension.
@@ -128,11 +129,11 @@ export interface SourceFileConfiguration {
     /**
      * The compiler to emulate.
      */
-    readonly intelliSenseMode: "msvc-x86" | "msvc-x64" | "gcc-x86" | "gcc-x64" | "clang-x86" | "clang-x64";
+    readonly intelliSenseMode: "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" | "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" | "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
     /**
      * The C or C++ standard to emulate.
      */
-    readonly standard: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20";
+    readonly standard: "c89" | "c99" | "c11" | "c18" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" | "gnu89" | "gnu99" | "gnu11" | "gnu18" | "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20";
     /**
      * Any files that need to be included before the source file is parsed.
      */

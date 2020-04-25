@@ -22,7 +22,8 @@ var Version;
     Version[Version["v1"] = 1] = "v1";
     Version[Version["v2"] = 2] = "v2";
     Version[Version["v3"] = 3] = "v3";
-    Version[Version["latest"] = 3] = "latest";
+    Version[Version["v4"] = 4] = "v4";
+    Version[Version["latest"] = 4] = "latest";
 })(Version = exports.Version || (exports.Version = {}));
 function isCppToolsExtension(extension) {
     return extension.getApi !== undefined;
