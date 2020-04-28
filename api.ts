@@ -152,13 +152,15 @@ export interface SourceFileConfiguration {
     /**
      * The compiler to emulate.
      */
-    readonly intelliSenseMode: "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" | "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" | "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
+    readonly intelliSenseMode: "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" |
+        "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" |
+        "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
 
     /**
      * The C or C++ standard to emulate.
      */
-    readonly standard: "c89" | "c99" | "c11" | "c18" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" | "gnu89" | "gnu99" | "gnu11" | "gnu18" | "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20";
-
+    readonly standard: "c89" | "c99" | "c11" | "c18" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" |
+        "gnu89" | "gnu99" | "gnu11" | "gnu18" | "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20";
     /**
      * Any files that need to be included before the source file is parsed.
      */
@@ -232,8 +234,8 @@ export interface WorkspaceBrowseConfiguration {
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
      * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
      */
-    readonly standard?: "c89" | "c99" | "c11" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20";
-
+    readonly standard?: "c89" | "c99" | "c11" | "c18" | "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" |
+        "gnu89" | "gnu99" | "gnu11" | "gnu18" | "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20";
     /**
      * The version of the Windows SDK that should be used. This field defaults to the latest Windows SDK
      * installed on the PC and will only be used if [compilerPath](#WorkspaceBrowseConfiguration.compilerPath)
