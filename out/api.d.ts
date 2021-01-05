@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { CancellationToken } from 'vscode-jsonrpc';
 /**
  * API version information.
  */
@@ -71,7 +70,7 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * @param token (optional) The cancellation token.
      * @returns 'true' if this provider can provide IntelliSense configurations for the given document.
      */
-    canProvideConfiguration(uri: vscode.Uri, token?: CancellationToken): Thenable<boolean>;
+    canProvideConfiguration(uri: vscode.Uri, token?: vscode.CancellationToken): Thenable<boolean>;
     /**
      * A request to get Intellisense configurations for the given files.
      * @param uris A list of one of more URIs for the files to provide configurations for.
@@ -82,26 +81,26 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * configuration for that file in the return value. An empty array may be returned if the provider cannot provide
      * configurations for any of the files requested.
      */
-    provideConfigurations(uris: vscode.Uri[], token?: CancellationToken): Thenable<SourceFileConfigurationItem[]>;
+    provideConfigurations(uris: vscode.Uri[], token?: vscode.CancellationToken): Thenable<SourceFileConfigurationItem[]>;
     /**
      * A request to determine whether this provider can provide a code browsing configuration for the workspace folder.
      * @param token (optional) The cancellation token.
      * @returns 'true' if this provider can provide a code browsing configuration for the workspace folder.
      */
-    canProvideBrowseConfiguration(token?: CancellationToken): Thenable<boolean>;
+    canProvideBrowseConfiguration(token?: vscode.CancellationToken): Thenable<boolean>;
     /**
      * A request to get the code browsing configuration for the workspace folder.
      * @param token (optional) The cancellation token.
      * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
      * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
      */
-    provideBrowseConfiguration(token?: CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
+    provideBrowseConfiguration(token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
     /**
      * A request to determine whether this provider can provide a code browsing configuration for each folder in a multi-root workspace.
      * @param token (optional) The cancellation token.
      * @returns 'true' if this provider can provide a code browsing configuration for each folder in a multi-root workspace.
      */
-    canProvideBrowseConfigurationsPerFolder(token?: CancellationToken): Thenable<boolean>;
+    canProvideBrowseConfigurationsPerFolder(token?: vscode.CancellationToken): Thenable<boolean>;
     /**
      * A request to get the code browsing configuration for the workspace folder.
      * @param uri The URI of the folder to provide a browse configuration for.
@@ -109,7 +108,7 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
      * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
      */
-    provideFolderBrowseConfiguration(uri: vscode.Uri, token?: CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
+    provideFolderBrowseConfiguration(uri: vscode.Uri, token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
 }
 /**
  * The model representing the custom IntelliSense configurations for a source file.
