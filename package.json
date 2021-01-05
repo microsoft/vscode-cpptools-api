@@ -13,7 +13,7 @@
     "typescript": "^4.1.3"
   },
   "scripts": {
-    "compile": "node ./node_modules/vscode/bin/install && tsc -p ./"
+    "compile": "tsc -p ./"
   },
   "keywords": [
     "vscode",
