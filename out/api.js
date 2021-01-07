@@ -27,8 +27,18 @@ var Version;
     Version[Version["v4"] = 4] = "v4";
     Version[Version["latest"] = 4] = "latest";
 })(Version = exports.Version || (exports.Version = {}));
+/**
+ * Check if an object satisfies the contract of the CppToolExtension interface.
+ */
 function isCppToolsExtension(extension) {
-    return extension.getApi !== undefined;
+    return extension && extension.getApi;
+}
+/**
+ * Check if an object satisfies the contract of the first version of the CppToolsApi.
+ * (The first release of the API only had two functions)
+ */
+function isLegacyCppToolsApi(api) {
+    return api && api.registerCustomConfigurationProvider && api.didChangeCustomConfiguration;
 }
 /**
  * Helper function to get the CppToolsApi from the cpptools extension.
@@ -57,8 +67,8 @@ function isCppToolsExtension(extension) {
 function getCppToolsApi(version) {
     return __awaiter(this, void 0, void 0, function* () {
         let cpptools = vscode.extensions.getExtension("ms-vscode.cpptools");
-        let extension;
-        let api;
+        let extension = undefined;
+        let api = undefined;
         if (cpptools) {
             if (!cpptools.isActive) {
                 extension = yield cpptools.activate();
@@ -75,29 +85,32 @@ function getCppToolsApi(version) {
                     // Unfortunately, ms-vscode.cpptools [0.17.6, 0.18.1] throws a RangeError if you specify a version greater than v1.
                     // These versions of the extension will not be able to act on the newer interface and v2 is a superset of v1, so we can safely fall back to v1.
                     let e = err;
-                    if (e.message && e.message.startsWith("Invalid version")) {
+                    if (e && e.message && e.message.startsWith("Invalid version")) {
                         api = extension.getApi(Version.v1);
                     }
                 }
                 if (version !== Version.v1) {
                     if (!api.getVersion) {
-                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
+                        console.warn(`[vscode-cpptools-api] version ${version} requested, but is not available in the current version of the cpptools extension. Using version 1 instead.`);
                     }
                     else if (version !== api.getVersion()) {
-                        console.warn(`vscode-cpptools-api version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
+                        console.warn(`[vscode-cpptools-api] version ${version} requested, but is not available in the current version of the cpptools extension. Using version ${api.getVersion()} instead.`);
                     }
                 }
             }
-            else {
+            else if (isLegacyCppToolsApi(extension)) {
                 // ms-vscode.cpptools version 0.17.5
                 api = extension;
                 if (version !== Version.v0) {
-                    console.warn(`vscode-cpptools-api version ${version} requested, but is not available in version 0.17.5 of the cpptools extension. Using version 0 instead.`);
+                    console.warn(`[vscode-cpptools-api] version ${version} requested, but is not available in version 0.17.5 of the cpptools extension. Using version 0 instead.`);
                 }
+            }
+            else {
+                console.warn('[vscode-cpptools-api] No cpptools API was found.');
             }
         }
         else {
-            console.warn("C/C++ extension is not installed");
+            console.warn('[vscode-cpptools-api] C/C++ extension is not installed');
         }
         return api;
     });
