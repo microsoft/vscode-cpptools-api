@@ -28,7 +28,7 @@ var Version;
     Version[Version["latest"] = 4] = "latest";
 })(Version = exports.Version || (exports.Version = {}));
 /**
- * Check if an object satisfies the contract of the CppToolExtension interface.
+ * Check if an object satisfies the contract of the CppToolsExtension interface.
  */
 function isCppToolsExtension(extension) {
     return extension && extension.getApi;

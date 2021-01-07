@@ -257,7 +257,7 @@ export interface CppToolsExtension {
 }
 
 /**
- * Check if an object satisfies the contract of the CppToolExtension interface.
+ * Check if an object satisfies the contract of the CppToolsExtension interface.
  */
 function isCppToolsExtension(extension: any): extension is CppToolsExtension {
     return extension && extension.getApi;
