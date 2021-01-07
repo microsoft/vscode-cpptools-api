@@ -110,9 +110,11 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * A request to get the code browsing configuration for the workspace folder.
      * @param token (optional) The cancellation token.
      * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
-     * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
+     * construct the equivalent of `browse.path` from `c_cpp_properties.json`. If there is no configuration to report, or
+     * the provider indicated that it cannot provide a [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration)
+     * then `null` should be returned.
      */
-    provideBrowseConfiguration(token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
+    provideBrowseConfiguration(token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration | null>;
 
     /**
      * A request to determine whether this provider can provide a code browsing configuration for each folder in a multi-root workspace.
@@ -126,9 +128,11 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * @param uri The URI of the folder to provide a browse configuration for.
      * @param token (optional) The cancellation token.
      * @returns A [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) with the information required to
-     * construct the equivalent of `browse.path` from `c_cpp_properties.json`.
+     * construct the equivalent of `browse.path` from `c_cpp_properties.json`. If there is no configuration for this folder, or
+     * the provider indicated that it cannot provide a [WorkspaceBrowseConfiguration](#WorkspaceBrowseConfiguration) per folder
+     * then `null` should be returned.
      */
-    provideFolderBrowseConfiguration(uri: vscode.Uri, token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration>;
+    provideFolderBrowseConfiguration(uri: vscode.Uri, token?: vscode.CancellationToken): Thenable<WorkspaceBrowseConfiguration | null>;
 }
 
 /**
