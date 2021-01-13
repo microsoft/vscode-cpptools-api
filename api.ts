@@ -15,7 +15,8 @@ export enum Version {
     v2 = 2, // 2.x.x
     v3 = 3, // 3.x.x
     v4 = 4, // 4.x.x
-    latest = v4
+    v5 = 5, // 5.x.x
+    latest = v5
 }
 
 /**
@@ -154,6 +155,9 @@ export interface SourceFileConfiguration {
 
     /**
      * The platform, compiler, and architecture variant to emulate.
+     * IntelliSenseMode values without a platform variant will resolve to a value that matches
+     * the host platform. For example, if the host platform is Windows and the IntelliSenseMode
+     * is "clang-x64", then "clang-x64" will resolve to "windows-clang-x64".
      */
     readonly intelliSenseMode?: "linux-clang-x86" | "linux-clang-x64" | "linux-clang-arm" | "linux-clang-arm64" |
         "linux-gcc-x86" | "linux-gcc-x64" | "linux-gcc-arm" | "linux-gcc-arm64" |
