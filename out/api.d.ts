@@ -8,7 +8,8 @@ export declare enum Version {
     v2 = 2,
     v3 = 3,
     v4 = 4,
-    latest = 4
+    v5 = 5,
+    latest = 5
 }
 /**
  * An interface to allow VS Code extensions to communicate with the C/C++ extension.
@@ -130,9 +131,12 @@ export interface SourceFileConfiguration {
      */
     readonly defines: string[];
     /**
-     * The compiler to emulate.
+     * The platform, compiler, and architecture variant to emulate.
+     * IntelliSenseMode values without a platform variant will resolve to a value that matches
+     * the host platform. For example, if the host platform is Windows and the IntelliSenseMode
+     * is "clang-x64", then "clang-x64" will resolve to "windows-clang-x64".
      */
-    readonly intelliSenseMode?: "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" | "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" | "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
+    readonly intelliSenseMode?: "linux-clang-x86" | "linux-clang-x64" | "linux-clang-arm" | "linux-clang-arm64" | "linux-gcc-x86" | "linux-gcc-x64" | "linux-gcc-arm" | "linux-gcc-arm64" | "macos-clang-x86" | "macos-clang-x64" | "macos-clang-arm" | "macos-clang-arm64" | "macos-gcc-x86" | "macos-gcc-x64" | "macos-gcc-arm" | "macos-gcc-arm64" | "windows-clang-x86" | "windows-clang-x64" | "windows-clang-arm" | "windows-clang-arm64" | "windows-gcc-x86" | "windows-gcc-x64" | "windows-gcc-arm" | "windows-gcc-arm64" | "windows-msvc-x86" | "windows-msvc-x64" | "windows-msvc-arm" | "windows-msvc-arm64" | "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" | "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" | "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
     /**
      * The C or C++ standard to emulate.
      */
