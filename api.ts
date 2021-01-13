@@ -153,9 +153,16 @@ export interface SourceFileConfiguration {
     readonly defines: string[];
 
     /**
-     * The compiler to emulate.
+     * The platform, compiler, and architecture variant to emulate.
      */
-    readonly intelliSenseMode?: "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" |
+    readonly intelliSenseMode?: "linux-clang-x86" | "linux-clang-x64" | "linux-clang-arm" | "linux-clang-arm64" |
+        "linux-gcc-x86" | "linux-gcc-x64" | "linux-gcc-arm" | "linux-gcc-arm64" |
+        "macos-clang-x86" | "macos-clang-x64" | "macos-clang-arm" | "macos-clang-arm64" |
+        "macos-gcc-x86" | "macos-gcc-x64" | "macos-gcc-arm" | "macos-gcc-arm64" |
+        "windows-clang-x86" | "windows-clang-x64" | "windows-clang-arm" | "windows-clang-arm64" |
+        "windows-gcc-x86" | "windows-gcc-x64" | "windows-gcc-arm" | "windows-gcc-arm64" |
+        "windows-msvc-x86" | "windows-msvc-x64" | "windows-msvc-arm" | "windows-msvc-arm64" |
+        "msvc-x86" | "msvc-x64" | "msvc-arm" | "msvc-arm64" |
         "gcc-x86" | "gcc-x64" | "gcc-arm" | "gcc-arm64" |
         "clang-x86" | "clang-x64" | "clang-arm" | "clang-arm64";
 
