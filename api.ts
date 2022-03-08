@@ -16,7 +16,8 @@ export enum Version {
     v3 = 3, // 3.x.x
     v4 = 4, // 4.x.x
     v5 = 5, // 5.x.x
-    latest = v5
+    v6 = 6, // 6.x.x
+    latest = v6
 }
 
 /**
@@ -187,9 +188,16 @@ export interface SourceFileConfiguration {
     readonly compilerPath?: string;
 
     /**
-     * Arguments for the compiler.
+     * Arguments for the compiler. These arguments should not require shell parsing, so should not include any
+     * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];
+
+    /**
+     * Command line fragments for the compiler. These are similar to compiler arguments, but support shell parsed
+     * content such as shell quoting and escaping.
+     */
+    readonly compilerFragments?: string[];
 
     /**
      * The version of the Windows SDK that should be used. This field will only be used if
@@ -240,9 +248,16 @@ export interface WorkspaceBrowseConfiguration {
     readonly compilerPath?: string;
 
     /**
-     * Arguments for the compiler.
+     * Arguments for the compiler. These arguments should not require shell parsing, so should not include any
+     * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];
+
+    /**
+     * Command line fragments for the compiler. These are similar to compiler arguments, but support shell parsed
+     * content such as shell quoting and escaping.
+     */
+    readonly compilerFragments?: string[];
 
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
