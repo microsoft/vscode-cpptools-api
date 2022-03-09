@@ -188,7 +188,7 @@ export interface SourceFileConfiguration {
     readonly compilerPath?: string;
 
     /**
-     * Arguments for the compiler. These arguments should not require shell parsing, so should not include any
+     * Arguments for the compiler. These arguments will not be processed by the shell and should not include any
      * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];
@@ -248,7 +248,7 @@ export interface WorkspaceBrowseConfiguration {
     readonly compilerPath?: string;
 
     /**
-     * Arguments for the compiler. These arguments should not require shell parsing, so should not include any
+     * Arguments for the compiler. These arguments will not be processed by the shell and should not include any
      * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];

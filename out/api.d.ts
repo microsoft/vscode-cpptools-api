@@ -9,7 +9,8 @@ export declare enum Version {
     v3 = 3,
     v4 = 4,
     v5 = 5,
-    latest = 5
+    v6 = 6,
+    latest = 6,
 }
 /**
  * An interface to allow VS Code extensions to communicate with the C/C++ extension.
@@ -151,9 +152,15 @@ export interface SourceFileConfiguration {
      */
     readonly compilerPath?: string;
     /**
-     * Arguments for the compiler.
+     * Arguments for the compiler. These arguments will not be processed by the shell and should not include any
+     * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];
+    /**
+     * Command line fragments for the compiler. These are similar to compiler arguments, but support shell parsed
+     * content such as shell quoting and escaping.
+     */
+    readonly compilerFragments?: string[];
     /**
      * The version of the Windows SDK that should be used. This field will only be used if
      * [compilerPath](#SourceFileConfiguration.compilerPath) is set and the compiler is capable of targeting Windows.
@@ -198,9 +205,15 @@ export interface WorkspaceBrowseConfiguration {
      */
     readonly compilerPath?: string;
     /**
-     * Arguments for the compiler.
+     * Arguments for the compiler. These arguments will not be processed by the shell and should not include any
+     * shell variables, quoting or escaping.
      */
     readonly compilerArgs?: string[];
+    /**
+     * Command line fragments for the compiler. These are similar to compiler arguments, but support shell parsed
+     * content such as shell quoting and escaping.
+     */
+    readonly compilerFragments?: string[];
     /**
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
      * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
