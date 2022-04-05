@@ -331,8 +331,12 @@ export async function getCppToolsApi(version: Version): Promise<CppToolsApi | un
     let api: CppToolsApi | undefined = undefined;
 
     if (cpptools) {
-        if (!cpptools.isActive) { 
-            extension = await cpptools.activate();
+        if (!cpptools.isActive) {
+            try {
+                // activate may throw if VS Code is shutting down.
+                extension = await cpptools.activate();
+            } catch {
+            }
         } else {
             extension = cpptools.exports;
         }

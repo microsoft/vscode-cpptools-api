@@ -73,7 +73,12 @@ function getCppToolsApi(version) {
         let api = undefined;
         if (cpptools) {
             if (!cpptools.isActive) {
-                extension = yield cpptools.activate();
+                try {
+                    // activate may throw if VS Code is shutting down.
+                    extension = yield cpptools.activate();
+                }
+                catch (_a) {
+                }
             }
             else {
                 extension = cpptools.exports;
