@@ -41,7 +41,7 @@ extends:
     - stage: build
       jobs:
       - job: Phase_1
-        displayName: Build cpptools.vsix
+        displayName: Build
         timeoutInMinutes: 60
         cancelTimeoutInMinutes: 1
         templateContext:
