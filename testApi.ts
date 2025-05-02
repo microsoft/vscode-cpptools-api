@@ -50,6 +50,7 @@ export interface CppToolsTestHook extends vscode.Disposable {
  * Tag Parser or IntelliSense status codes.
  */
 export enum Status {
+    Idle = 0,
     TagParsingBegun = 1,
     TagParsingDone = 2,
     IntelliSenseCompiling = 3,
