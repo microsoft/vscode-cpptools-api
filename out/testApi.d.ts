@@ -42,7 +42,8 @@ export declare enum Status {
     TagParsingBegun = 1,
     TagParsingDone = 2,
     IntelliSenseCompiling = 3,
-    IntelliSenseReady = 4
+    IntelliSenseReady = 4,
+    Idle = 5
 }
 /**
  * Information about the status of Tag Parser or IntelliSense for an active document.

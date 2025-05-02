@@ -25,6 +25,7 @@ var Status;
     Status[Status["TagParsingDone"] = 2] = "TagParsingDone";
     Status[Status["IntelliSenseCompiling"] = 3] = "IntelliSenseCompiling";
     Status[Status["IntelliSenseReady"] = 4] = "IntelliSenseReady";
+    Status[Status["Idle"] = 5] = "Idle";
 })(Status = exports.Status || (exports.Status = {}));
 function isCppToolsTestExtension(extension) {
     return extension.getTestApi !== undefined;
