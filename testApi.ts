@@ -53,7 +53,8 @@ export enum Status {
     TagParsingBegun = 1,
     TagParsingDone = 2,
     IntelliSenseCompiling = 3,
-    IntelliSenseReady = 4
+    IntelliSenseReady = 4,
+    Idle = 5
 }
 
 /**
