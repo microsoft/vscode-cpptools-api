@@ -60,6 +60,9 @@ extends:
           inputs:
             version: 22.x
 
+        - script: IF EXIST %SYSTEMDRIVE%\Users\%USERNAME%\.npmrc del %SYSTEMDRIVE%\Users\%USERNAME%\.npmrc
+          displayName: Delete .npmrc if it exists
+
         - task: Npm@1
           displayName: 'npm install'
 
