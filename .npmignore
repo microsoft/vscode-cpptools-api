@@ -1,0 +1,9 @@
+jobs/
+node_modules/
+.gitignore
+.npmrc
+CODEOWNERS
+SECURITY.md
+*.ts
+*.json
+package*
