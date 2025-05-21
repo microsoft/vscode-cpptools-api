@@ -3,7 +3,7 @@ node_modules/
 .gitignore
 .npmrc
 CODEOWNERS
+package-lock.json
 SECURITY.md
+tsconfig.json
 *.ts
-*.json
-package*
