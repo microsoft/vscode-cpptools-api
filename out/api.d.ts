@@ -10,7 +10,8 @@ export declare enum Version {
     v4 = 4,
     v5 = 5,
     v6 = 6,
-    latest = 6
+    v7 = 7,
+    latest = 7
 }
 /**
  * An interface to allow VS Code extensions to communicate with the C/C++ extension.
