@@ -22,8 +22,8 @@ export enum Version {
 }
 
 export type CStandard = "c89" | "c99" | "c11" | "c17" | "c23";
-export type CppStandard = "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" | "c++23" | "c++26";
 export type GnuCStandard = "gnu89" | "gnu99" | "gnu11" | "gnu17" | "gnu23";
+export type CppStandard = "c++98" | "c++03" | "c++11" | "c++14" | "c++17" | "c++20" | "c++23" | "c++26";
 export type GnuCppStandard = "gnu++98" | "gnu++03" | "gnu++11" | "gnu++14" | "gnu++17" | "gnu++20" | "gnu++23" | "gnu++26";
 
 /**
@@ -180,7 +180,7 @@ export interface SourceFileConfiguration {
     /**
      * The C or C++ standard to emulate.
      */
-    readonly standard?: CStandard | CppStandard | GnuCStandard | GnuCppStandard;
+    readonly standard?: CStandard | GnuCStandard | CppStandard | GnuCppStandard;
     /**
      * Any files that need to be included before the source file is parsed.
      */
@@ -268,7 +268,7 @@ export interface WorkspaceBrowseConfiguration {
      * The C or C++ standard to emulate. This field defaults to "c++17" and will only be used if
      * [compilerPath](#WorkspaceBrowseConfiguration.compilerPath) is set.
      */
-    readonly standard?: CStandard | CppStandard | GnuCStandard | GnuCppStandard;
+    readonly standard?: CStandard | GnuCStandard | CppStandard | GnuCppStandard;
     /**
      * The version of the Windows SDK that should be used. This field defaults to the latest Windows SDK
      * installed on the PC and will only be used if [compilerPath](#WorkspaceBrowseConfiguration.compilerPath)
