@@ -11,7 +11,8 @@ export declare enum Version {
     v5 = 5,
     v6 = 6,
     v7 = 7,
-    latest = 7
+    v8 = 8,
+    latest = 8
 }
 export type CStandard = "c89" | "c99" | "c11" | "c17" | "c23";
 export type GnuCStandard = "gnu89" | "gnu99" | "gnu11" | "gnu17" | "gnu23";
@@ -45,7 +46,7 @@ export interface CppToolsApi extends vscode.Disposable {
      */
     notifyReady(provider: CustomConfigurationProvider): void;
     /**
-     * Notify the C/C++ extension that the current configuration has changed. Upon receiving this
+     * Notify the C/C++ extension that the current set of configurations has changed. Upon receiving this
      * notification, the C/C++ extension will request the new configurations.
      * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
      * instance representing the provider extension.
@@ -58,6 +59,16 @@ export interface CppToolsApi extends vscode.Disposable {
      * instance representing the provider extension.
      */
     didChangeCustomBrowseConfiguration(provider: CustomConfigurationProvider): void;
+    /**
+     * Push IntelliSense configurations for source files.
+     * A provider should push all custom configurations available, as soon as they are available,
+     * to support features such as whole codebase symbol indexing and for an accurate include graph.
+     * Configurations are additive. Call `didChangeCustomConfiguration` to clear all configurations.
+     * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
+     * instance representing the provider extension.
+     * @param items A list of [SourceFileConfigurationItem](#SourceFileConfigurationItem) representing the source files and their configurations.
+     */
+    provideConfigurations(provider: CustomConfigurationProvider, items: SourceFileConfigurationItem[]): void;
 }
 /**
  * An interface to allow this extension to communicate with Custom Configuration Provider extensions.
@@ -189,7 +200,7 @@ export interface SourceFileConfigurationItem {
     };
 ```
      */
-    readonly uri: string | vscode.Uri;
+    readonly uri: string | vscode.Uri | (string | vscode.Uri)[];
     /**
      * The IntelliSense configuration for [uri](#SourceFileConfigurationItem.uri)
      */

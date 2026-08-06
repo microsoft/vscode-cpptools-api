@@ -28,7 +28,8 @@ var Version;
     Version[Version["v5"] = 5] = "v5";
     Version[Version["v6"] = 6] = "v6";
     Version[Version["v7"] = 7] = "v7";
-    Version[Version["latest"] = 7] = "latest";
+    Version[Version["v8"] = 8] = "v8";
+    Version[Version["latest"] = 8] = "latest";
 })(Version = exports.Version || (exports.Version = {}));
 /**
  * Check if an object satisfies the contract of the CppToolsExtension interface.

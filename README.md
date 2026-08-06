@@ -5,13 +5,39 @@ of Microsoft's C/C++ extension for VS Code.
 
 When your extension activates, you can use the following code to get access to the API:
 
+### Version >= 8.0.0
+```TypeScript
+    import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
+
+    const requestedVersion: Version = Version.v8;
+    let api: CppToolsApi|undefined = await getCppToolsApi(requestedVersion);
+    if (api) {
+        // Inform cpptools that a custom config provider will be able to service the current workspace.
+        api.registerCustomConfigurationProvider(provider);
+
+        // Do any required setup that the provider needs.
+
+        // Notify cpptools that the provider is ready to provide IntelliSense configurations.
+        api.notifyReady(provider);
+
+        if (api.getVersion() === requestedVersion) {
+            // Use functions introduced in the requested API version.
+            api.provideConfigurations(provider, configurations);
+        } else {
+            // An older version of cpptools returned an earlier API version.
+        }
+    }
+    // Dispose of the 'api' in your extension's deactivate() method, or whenever you want to unregister the provider.
+```
+
 ### Version >= 2.1.0
 ```TypeScript
     import {CppToolsApi, Version, CustomConfigurationProvider, getCppToolsApi} from 'vscode-cpptools';
- 
-    let api: CppToolsApi|undefined = await getCppToolsApi(Version.v2);
+
+    const requestedVersion: Version = Version.v2;
+    let api: CppToolsApi|undefined = await getCppToolsApi(requestedVersion);
     if (api) {
-        if (api.notifyReady) {
+        if (api.getVersion && api.getVersion() === requestedVersion) {
             // Inform cpptools that a custom config provider will be able to service the current workspace.
             api.registerCustomConfigurationProvider(provider);
 
@@ -20,8 +46,8 @@ When your extension activates, you can use the following code to get access to t
             // Notify cpptools that the provider is ready to provide IntelliSense configurations.
             api.notifyReady(provider);
         } else {
-            // Running on a version of cpptools that doesn't support v2 yet.
-            
+            // An older version of cpptools returned an earlier API version.
+
             // Do any required setup that the provider needs.
 
             // Inform cpptools that a custom config provider will be able to service the current workspace.
@@ -63,6 +89,12 @@ provider to serve IntelliSense configurations for the workspace folder.
 In version 2, you will want to register the provider as soon as your extension activates and confirms that it is capable of
 providing configurations for the active workspace so that the C/C++ extension can disable standard handling of
 `c_cpp_properties.json`, including indexing and parsing the files referenced by the active configuration.
+
+In version 8, you will want to provide (push) all configurations as soon as they are available. This provides cpptools with
+valid configuration for various features that require accurate include graphs and eager analysis. For configuration
+providers that process all configurations as a single batch, that batch should be provided as soon as available. For
+configuration providers that lazily/incrementally generate configurations, those can be pushed as they become available,
+providing limited support for features that require accurate include graphs and eager analysis.
 
 Prior to version 2, it is best practice to wait to register the provider until it is ready to begin serving configurations.
 Once the provider is registered, it is recommended to call `didChangeCustomConfigurations` so that the C/C++ extension will
