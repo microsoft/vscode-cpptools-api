@@ -11,7 +11,8 @@ export declare enum Version {
     v5 = 5,
     v6 = 6,
     v7 = 7,
-    latest = 7
+    v8 = 8,
+    latest = 8
 }
 export type CStandard = "c89" | "c99" | "c11" | "c17" | "c23";
 export type GnuCStandard = "gnu89" | "gnu99" | "gnu11" | "gnu17" | "gnu23";
@@ -40,13 +41,17 @@ export interface CppToolsApi extends vscode.Disposable {
     /**
      * Notify the C/C++ extension that the [CustomConfigurationProvider](#CustomConfigurationProvider)
      * is ready to provide custom configurations.
+     * Readiness means the provider can service configuration requests, not that every configuration is available.
+     * In version 8, this notification does not clear configurations already provided or cached from a previous session.
      * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
      * instance representing the provider extension.
      */
     notifyReady(provider: CustomConfigurationProvider): void;
     /**
-     * Notify the C/C++ extension that the current configuration has changed. Upon receiving this
+     * Notify the C/C++ extension that the current set of configurations has changed. Upon receiving this
      * notification, the C/C++ extension will request the new configurations.
+     * To replace pushed configurations without initiating those requests, use
+     * [provideConfigurations](#CppToolsApi.provideConfigurations) with `replaceExisting` set to `true`.
      * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
      * instance representing the provider extension.
      */
@@ -58,6 +63,33 @@ export interface CppToolsApi extends vscode.Disposable {
      * instance representing the provider extension.
      */
     didChangeCustomBrowseConfiguration(provider: CustomConfigurationProvider): void;
+    /**
+     * Push IntelliSense configurations for source files associated with a workspace folder. Available in version 8.
+     * A registered provider should push whatever configurations are available as soon as they are available,
+     * before or after [notifyReady](#CppToolsApi.notifyReady). It need not evaluate every project first.
+     * Configurations apply only to the specified workspace folder while it uses this provider; this call does not
+     * select the provider. Source files need not be contained within the workspace folder.
+     *
+     * By default, configurations are additive: each supplied file's configuration replaces its previous value,
+     * and configurations for files omitted from the batch remain unchanged. Identical configurations do not
+     * invalidate existing analysis results. Configurations may be cached across sessions.
+     *
+     * When `replaceExisting` is `true`, replace this provider's configurations for the specified workspace folder,
+     * including cached configurations, with `items` as one update. An empty batch with `replaceExisting` set to
+     * `true` explicitly clears them. This does not initiate the configuration requests caused by
+     * [didChangeCustomConfiguration](#CppToolsApi.didChangeCustomConfiguration).
+     * Do not replace configurations merely because the provider has activated again.
+     *
+     * Configuration requests remain available for files whose configurations are not yet known. Their responses
+     * and these pushes may both include additional related files and grouped URIs.
+     * @param provider An instance of the [CustomConfigurationProvider](#CustomConfigurationProvider)
+     * instance representing the provider extension.
+     * @param workspaceFolderUri The file URI of the workspace folder whose configuration is being updated.
+     * @param items A list of [SourceFileConfigurationItem](#SourceFileConfigurationItem) representing the source files and their configurations.
+     * @param replaceExisting Whether to replace all configurations for this provider and workspace folder.
+     * Defaults to `false`.
+     */
+    provideConfigurations(provider: CustomConfigurationProvider, workspaceFolderUri: string | vscode.Uri, items: SourceFileConfigurationItem[], replaceExisting?: boolean): void;
 }
 /**
  * An interface to allow this extension to communicate with Custom Configuration Provider extensions.
@@ -87,6 +119,13 @@ export interface CustomConfigurationProvider extends vscode.Disposable {
      * Note: If this provider cannot provide configurations for any of the files in `uris`, the provider may omit the
      * configuration for that file in the return value. An empty array may be returned if the provider cannot provide
      * configurations for any of the files requested.
+     *
+     * In version 8, the request can also serve as a signal to evaluate a related project. The provider may return
+     * configurations for additional related files, including grouped URIs in
+     * [SourceFileConfigurationItem](#SourceFileConfigurationItem), without waiting for individual requests.
+     * These configurations apply to the workspace folder associated with the request and are additive, like
+     * [CppToolsApi.provideConfigurations](#CppToolsApi.provideConfigurations).
+     * Providers using earlier API versions must return single-URI items.
      */
     provideConfigurations(uris: vscode.Uri[], token?: vscode.CancellationToken): Thenable<SourceFileConfigurationItem[]>;
     /**
@@ -173,11 +212,14 @@ export interface SourceFileConfiguration {
     readonly windowsSdkVersion?: string;
 }
 /**
- * The model representing a source file and its corresponding configuration.
+ * The model representing source files and their corresponding configuration.
  */
 export interface SourceFileConfigurationItem {
     /**
-     * The URI of the source file. It should follow the file URI scheme and represent an absolute path to the file.
+     * The URI of the source file, or, in version 8, an array of URIs for files sharing this configuration.
+     * Each URI should follow the file URI scheme and represent an absolute path to the file.
+     * Arrays may be used in both pushed configurations and configuration request responses after negotiating
+     * version 8. A URI array must not be empty.
      * @example
 ```
     // When working with a file path,
@@ -189,9 +231,9 @@ export interface SourceFileConfigurationItem {
     };
 ```
      */
-    readonly uri: string | vscode.Uri;
+    readonly uri: string | vscode.Uri | (string | vscode.Uri)[];
     /**
-     * The IntelliSense configuration for [uri](#SourceFileConfigurationItem.uri)
+     * The IntelliSense configuration for every file in [uri](#SourceFileConfigurationItem.uri).
      */
     readonly configuration: SourceFileConfiguration;
 }
